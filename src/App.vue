@@ -1,6 +1,7 @@
 <template>
   <v-app id="inspire">
-    <v-content>
+      <transition name="slide" mode="out-in">
+    <v-content v-if="isAllowed">
       <v-footer/>
       <v-container>
            <transition name="slide" mode="out-in">
@@ -10,22 +11,38 @@
       </v-container>
     <notifications classes="vue-notification" position="bottom right" group="foo" />
     </v-content>
+    <waiting v-else />
+     </transition>
   </v-app>
 </template>
 
 <script>
 import Footer from './components/Footer/Footer'
 import VToolbar from './components/Toolbar/VToolbar'
+import Waiting from './components/Custom/Waiting'
 export default {
   components: {
     VFooter: Footer,
-    VToolbar
+    VToolbar,
+    Waiting
   },
   props: {
     source: String
   },
-
+  data () {
+    return {
+      isAllowed: false
+    }
+  },
+  methods: {
+    changePos () {
+      setTimeout(() => {
+        this.isAllowed = true
+      }, 2000)
+    }
+  },
   created () {
+    this.changePos()
     this.$vuetify.theme.dark = false
   }
 }
