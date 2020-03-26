@@ -2,7 +2,13 @@
   <div>
     <v-navigation-drawer v-model="drawer" app color="#081F2E" dark>
       <v-card color="#081F2E" tile flat>
-        <v-card-title class="title">IT SOLUITONS</v-card-title>
+        <v-row justify="center">
+          <v-col cols="auto">
+            <v-img max-width="120" :src="require('../../assets/images/icon.png')"></v-img>
+        <span class="title font-weight-thin">
+          IT SOLUITONS</span>
+          </v-col>
+        </v-row>
       </v-card>
       <v-list dense>
         <v-list-item
