@@ -25,7 +25,7 @@
                  <v-card color="transparent" flat tile>
                      <v-row>
                          <v-col cols="auto">
-                             <v-btn rounded tile color="primary">Create Post <v-icon right>mdi-plus</v-icon></v-btn>
+                             <v-btn rounded to="/create-post" tile color="primary">Create Post <v-icon right>mdi-plus</v-icon></v-btn>
                          </v-col>
                           <v-col cols="auto">
                              <v-btn rounded text color="primary">create Forum<v-icon right>mdi-bell</v-icon></v-btn>

@@ -38,7 +38,7 @@ export default {
     changePos () {
       setTimeout(() => {
         this.isAllowed = true
-      }, 2000)
+      }, 200)
     }
   },
   created () {
