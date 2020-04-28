@@ -120,8 +120,8 @@ export default {
         icon: 'mdi-feather'
       },
       {
-        name: 'Projects',
-        path: '/projects',
+        name: 'Portfolio',
+        path: '/portfolio',
         icon: 'mdi-file-document-edit-outline'
       },
       {

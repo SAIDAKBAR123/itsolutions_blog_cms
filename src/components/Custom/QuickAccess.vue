@@ -45,11 +45,6 @@ export default {
     return {
       sidebar: [
         {
-          name: 'Dashboard',
-          path: '/',
-          icon: 'mdi-view-dashboard'
-        },
-        {
           name: 'Blog',
           path: '/blog',
           icon: 'mdi-feather'
@@ -60,7 +55,7 @@ export default {
           icon: 'mdi-file-document-edit-outline'
         },
         {
-          name: 'Banners',
+          name: 'Settings',
           path: '/banners',
           icon: 'mdi-image-size-select-actual'
         },

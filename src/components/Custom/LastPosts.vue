@@ -20,7 +20,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <tr v-for="item in desserts" :key="item.name">
+                        <tr v-for="(item,i) in desserts" :key="i">
                         <td class="nunito-default">{{ item.name.length > 40 ?item.name.substring(0,40)+'...' : item.name}}</td>
                         <td>{{ item.author }}</td>
                         <td>{{ item.date }}</td>

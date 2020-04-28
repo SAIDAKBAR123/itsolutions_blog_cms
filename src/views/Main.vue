@@ -1,13 +1,29 @@
 <template>
-      <router-view></router-view>
+   <v-app>
+      <transition name="slide" mode="out-in">
+    <v-content v-if="isAllowed">
+        <v-container>
+                <transition name="slide" mode="out-in">
+                    <router-view></router-view>
+                </transition>
+            <v-toolbar/>
+        </v-container>
+    <notifications classes="vue-notification" position="bottom right" group="foo" />
+    </v-content>
+    <waiting v-else />
+     </transition>
+     </v-app>
 </template>
 
 <script>
-
+// import Footer from '../components/Footer/Footer'
+import VToolbar from '../components/Toolbar/VToolbar'
+import Waiting from '../components/Custom/Waiting'
 export default {
-
-  props: {
-    source: String
+  components: {
+    // VFooter: Footer,
+    VToolbar,
+    Waiting
   },
   data () {
     return {
@@ -27,6 +43,7 @@ export default {
   }
 }
 </script>
+
 <style lang="scss" scoped>
 #inspire{
   background-color: #F8F8F8;

@@ -7,24 +7,41 @@ Vue.use(VueRouter)
 
 const routes = [
   {
-    path: '/',
+    path: '',
     name: 'Home',
-    component: Home
+    component: () => import('../views/Main.vue'),
+    children: [
+      {
+        path: '/',
+        name: 'Home',
+        component: Home
+      },
+      {
+        path: '/requests',
+        name: 'Requests',
+        component: () => import('../views/Requests.vue')
+      },
+      {
+        path: '/blog',
+        name: 'Blog',
+        component: () => import('../views/Blog.vue')
+      },
+      {
+        path: '/create-post',
+        name: 'NewPost',
+        component: () => import('../Layout/CreatePost.vue')
+      },
+      {
+        path: '/portfolio',
+        name: 'Portfolio',
+        component: () => import('../views/Portfolio.vue')
+      }
+    ]
   },
   {
-    path: '/requests',
-    name: 'Requests',
-    component: () => import('../views/Requests.vue')
-  },
-  {
-    path: '/blog',
-    name: 'Blog',
-    component: () => import('../views/Blog.vue')
-  },
-  {
-    path: '/create-post',
-    name: 'NewPost',
-    component: () => import('../Layout/CreatePost.vue')
+    path: '/login',
+    name: 'Login',
+    component: () => import('../views/Pages/Login.vue')
   }
 ]
 
