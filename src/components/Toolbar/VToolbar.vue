@@ -174,9 +174,9 @@ export default {
         icon: 'mdi-file-document-edit-outline'
       },
       {
-        name: 'Banners',
-        path: '/banners',
-        icon: 'mdi-image-size-select-actual'
+        name: 'Settings',
+        path: '/settings',
+        icon: 'mdi-tools'
       },
       {
         name: 'Comments & mails',

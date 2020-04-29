@@ -2,7 +2,7 @@
    <v-app>
       <transition name="slide" mode="out-in">
     <v-content v-if="isAllowed">
-        <v-container>
+        <v-container fluid>
                 <transition name="slide" mode="out-in">
                     <router-view></router-view>
                 </transition>

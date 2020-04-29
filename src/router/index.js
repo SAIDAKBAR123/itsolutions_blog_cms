@@ -35,6 +35,16 @@ const routes = [
         path: '/portfolio',
         name: 'Portfolio',
         component: () => import('../views/Portfolio.vue')
+      },
+      {
+        path: '/settings',
+        name: 'Settings',
+        component: () => import('../views/Settings.vue')
+      },
+      {
+        path: '/comments-list',
+        name: 'Comments',
+        component: () => import('../views/CommentsAndMails.vue')
       }
     ]
   },

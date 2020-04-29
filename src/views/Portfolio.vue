@@ -1,6 +1,6 @@
 <template>
   <div>
-      <v-container>
+      <v-container fluid class="px-0">
         <v-row justify="center" align="center">
           <v-col cols="12" md="auto">
             <v-btn color="primary" large>Add Project</v-btn>
