@@ -55,11 +55,6 @@ export default {
           icon: 'mdi-file-document-edit-outline'
         },
         {
-          name: 'Settings',
-          path: '/banners',
-          icon: 'mdi-image-size-select-actual'
-        },
-        {
           name: 'Comments & mails',
           path: '/comments-list',
           icon: 'mdi-comment-eye-outline'
