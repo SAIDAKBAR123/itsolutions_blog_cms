@@ -46,12 +46,12 @@ export default {
       sidebar: [
         {
           name: 'Blog',
-          path: '/blog',
+          path: '/create-post',
           icon: 'mdi-feather'
         },
         {
           name: 'Projects',
-          path: '/projects',
+          path: '/porfolio/new-project',
           icon: 'mdi-file-document-edit-outline'
         },
         {

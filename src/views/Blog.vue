@@ -49,7 +49,7 @@
                      </v-col>
                      <v-col cols="6">
                           <v-text-field
-                            color="red"
+                            color="primary"
                             v-model="search"
                             append-icon="mdi-image-search-outline"
                             label="Search"
@@ -82,13 +82,13 @@
                         <template v-slot:item.action="{ item }">
                           <v-row>
                               <v-col cols="auto">
-                                  <v-btn text color="" small fab><v-icon>mdi-fountain-pen-tip</v-icon></v-btn>
+                                  <edit-blog-dialog />
                               </v-col>
                                <v-col cols="auto">
                                   <v-btn @click="pw(item)" text small fab><v-icon>{{ item.status ? 'mdi-eye-outline':  'mdi-eye-off-outline'}}</v-icon></v-btn>
                               </v-col>
                               <v-col cols="auto">
-                                  <v-btn text color="red lighten-1" small fab><v-icon>mdi-trash-can-outline</v-icon></v-btn>
+                                  <delete-blog-dialog />
                               </v-col>
                           </v-row>
                         </template>
@@ -101,11 +101,17 @@
 </template>
 
 <script>
+import EditBlogDialog from '../components/Dialogs/EditBlogDialog'
+import DeleteBlogDialog from '../components/Dialogs/DeleteBlogDialog'
 export default {
   methods: {
     pw (item) {
       item.status = !item.status
     }
+  },
+  components: {
+    EditBlogDialog,
+    DeleteBlogDialog
   },
   data () {
     return {

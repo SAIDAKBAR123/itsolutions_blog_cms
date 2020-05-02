@@ -3,7 +3,7 @@
       <v-container fluid class="px-0">
         <v-row justify="center" align="center">
           <v-col cols="12" md="auto">
-            <v-btn color="primary" large>Add Project</v-btn>
+            <v-btn color="primary" large to="/portfolio/new-project">Add Project</v-btn>
           </v-col>
           <v-spacer></v-spacer>
           <v-col cols="12" md="2">
