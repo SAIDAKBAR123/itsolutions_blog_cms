@@ -1,5 +1,5 @@
 import API, { execute } from './Api'
 
 export default {
-  getAll: () => execute(API().get('authors'))
+  getCategories: () => execute(API().get('categories'))
 }

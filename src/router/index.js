@@ -27,6 +27,12 @@ const routes = [
         component: () => import('../views/Blog.vue')
       },
       {
+        path: '/blog/update-post/:id',
+        props: true,
+        name: 'EditPost',
+        component: () => import('../Layout/EditPost.vue')
+      },
+      {
         path: '/create-post',
         name: 'NewPost',
         component: () => import('../Layout/CreatePost.vue')

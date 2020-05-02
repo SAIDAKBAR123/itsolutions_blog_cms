@@ -67,7 +67,7 @@
                         :search="search"
                         :items="desserts"
                         :items-per-page="10"
-                        class="elevation-1">
+                        class="elevation-0">
                         <template v-slot:header.name="{ header }">
                          {{ header.text.toUpperCase() }}
                         </template>
@@ -170,28 +170,6 @@ export default {
           id: '2',
           name: 'Frozen Yogurt',
           title: 'df',
-          image: 'https://www.amante.ge/templates/yootheme/cache/1-f787a9cf.jpeg',
-          author: 'Azamat Abdullaev',
-          date: '2 Jan, 2020',
-          time: '21:03 PM',
-          view: '6 232',
-          status: 1
-        },
-        {
-          id: '3',
-          name: 'Frozen Yogurt',
-          title: 'hd',
-          image: 'https://www.amante.ge/templates/yootheme/cache/1-f787a9cf.jpeg',
-          author: 'Azamat Abdullaev',
-          date: '2 Jan, 2020',
-          time: '21:03 PM',
-          view: '6 232',
-          status: 1
-        },
-        {
-          id: '4',
-          name: 'Frozen Yogurt',
-          title: 'sdasdasdasdasdasdadas',
           image: 'https://www.amante.ge/templates/yootheme/cache/1-f787a9cf.jpeg',
           author: 'Azamat Abdullaev',
           date: '2 Jan, 2020',

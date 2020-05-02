@@ -4,13 +4,13 @@
          <v-row justify="space-between">
              <v-col cols="12">
                  <v-card flat tile>
-                       <p class="nunito fs_28 pa-3">New Post</p>
+                       <p class="nunito fs_28 pa-3">Edit Post</p>
                      <v-row justify="space-between">
                          <v-col cols="auto"><v-btn large outlined class="mx-2"><v-icon left>mdi-eye-settings</v-icon> Preview</v-btn></v-col>
                          <v-col cols="auto" class="mx-2">
                              <v-row justify="center" class="py-0">
                                     <v-col class="py-0" cols="auto"><v-btn large outlined color="grey" class="">Cancel</v-btn></v-col>
-                                    <v-col class="py-0" cols="auto"><v-btn large color="primary" class="" @click="publish">Publish <v-icon right>mdi-menu-right-outline</v-icon></v-btn></v-col>
+                                    <v-col class="py-0" cols="auto"><v-btn large color="success" class="">Save <v-icon right>mdi-menu-right-outline</v-icon></v-btn></v-col>
                              </v-row>
                          </v-col>
                      </v-row>
@@ -153,13 +153,6 @@ export default {
     }
   },
   methods: {
-    publish () {
-      this.$notify({
-        group: 'foo',
-        title: 'Important message',
-        text: 'Hello user! This is a notification!'
-      })
-    },
     onEditorBlur (quill) {
       console.log('editor blur!', quill)
     },

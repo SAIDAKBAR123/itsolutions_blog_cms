@@ -21,11 +21,12 @@
             <v-list two-line>
               <v-list-item-group v-model="selected" active-class="blue--text">
                   <v-skeleton-loader
-        ref="skeleton"
-        :boilerplate="false"
-        type="list-item-avatar-three-line"
-        class="mx-auto"
-      ></v-skeleton-loader>
+                    v-if="false"
+                    ref="skeleton"
+                    :boilerplate="false"
+                    type="list-item-three-line"
+                    class="mx-auto"
+                  ></v-skeleton-loader>
                 <v-card tile v-for="(item, index) in items" :key="index">
                   <v-list-item :key="item.title">
                     <template v-slot:default="{ active }">
@@ -46,8 +47,8 @@
                         <v-list-item-action-text
                           v-text="item.action"
                         ></v-list-item-action-text>
-                        <v-icon v-if="!active" color="grey lighten-1">
-                          mdi-comment
+                        <v-icon small v-if="!active" color="blue lighten-1">
+                           mdi-record
                         </v-icon>
 
                         <v-icon v-else color="blue">
