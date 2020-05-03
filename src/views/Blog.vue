@@ -41,7 +41,7 @@
                      <v-col cols="2">
                           <v-select
                             dense
-                            :items="items"
+                            :items="['hello']"
                             label="Outlined style"
                             outlined
                             hide-details
@@ -73,11 +73,17 @@
                         </template>
                         <template v-slot:item.image="{ item }">
                           <v-card tile flat color="transparent" max-width="120" class="pa-3">
-                              <v-img  max-width="120" :src="item.image"></v-img>
+                              <v-img  max-width="120" :src="item.mainImage.mainImageUrl"></v-img>
                           </v-card>
                         </template>
                          <template v-slot:item.status="{ item }">
                           <v-chip :color="item.status ? 'light-green lighten-4' : 'deep-purple lighten-4'">{{item.status ? 'published': 'unpublished'}}</v-chip>
+                        </template>
+                          <template v-slot:item.date="{ item }">
+                         <span>{{item.createdAt | moment('Do MMM, YYYY')}}</span>
+                        </template>
+                        <template v-slot:item.time="{ item }">
+                         <span>{{item.createdAt | moment('h:mm:ss a')}}</span>
                         </template>
                         <template v-slot:item.action="{ item }">
                           <v-row>
@@ -103,10 +109,17 @@
 <script>
 import EditBlogDialog from '../components/Dialogs/EditBlogDialog'
 import DeleteBlogDialog from '../components/Dialogs/DeleteBlogDialog'
+import Blogs from '../services/Blogs'
 export default {
   methods: {
     pw (item) {
       item.status = !item.status
+    },
+    getAll () {
+      Blogs.getAllPosts().then(res => {
+        console.log(res)
+        this.desserts = res
+      }).catch(err => console.log(err))
     }
   },
   components: {
@@ -150,35 +163,15 @@ export default {
         { text: 'Author', value: 'author' },
         { text: 'Date', value: 'date' },
         { text: 'Time', value: 'time' },
-        { text: 'View', value: 'view' },
+        { text: 'View', value: 'timesSeen' },
         { text: 'Status', value: 'status' },
         { text: 'Actions', value: 'action' }
       ],
-      desserts: [
-        {
-          id: '1',
-          name: 'Frozen Yogurt',
-          title: 'sdasdasdasdasdasdadas',
-          image: 'https://www.amante.ge/templates/yootheme/cache/1-f787a9cf.jpeg',
-          author: 'Azamat Abdullaev',
-          date: '2 Jan, 2020',
-          time: '21:03 PM',
-          view: '21 203',
-          status: 0
-        },
-        {
-          id: '2',
-          name: 'Frozen Yogurt',
-          title: 'df',
-          image: 'https://www.amante.ge/templates/yootheme/cache/1-f787a9cf.jpeg',
-          author: 'Azamat Abdullaev',
-          date: '2 Jan, 2020',
-          time: '21:03 PM',
-          view: '6 232',
-          status: 1
-        }
-      ]
+      desserts: []
     }
+  },
+  created () {
+    this.getAll()
   }
 }
 </script>

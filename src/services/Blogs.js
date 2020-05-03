@@ -1,5 +1,7 @@
 import API, { execute } from './Api'
 
 export default {
-  deleteReq: (id) => execute(API().delete(`requests/${id}`))
+  postMainImage: (data) => execute(API().post('files', data)),
+  postNewBlog: data => execute(API().post('posts', data)),
+  getAllPosts: data => execute(API().get('posts'))
 }

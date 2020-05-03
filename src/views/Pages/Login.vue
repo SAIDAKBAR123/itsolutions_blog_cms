@@ -27,6 +27,7 @@
                     name="login"
                     type="text"
                     outlined
+                    v-model="username"
                     dark
                   />
 
@@ -34,6 +35,7 @@
                     id="password"
                     outlined
                     dark
+                     v-model="password"
                     label="Password"
                     name="password"
                     type="password"
@@ -42,7 +44,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn color="blue darken-4" tile elevation="0" dark class="py-2 px-5" to="/" x-large>Login</v-btn>
+                <v-btn color="blue darken-4" tile elevation="0" dark class="py-2 px-5" @click="login" x-large>Login</v-btn>
                  <v-spacer />
               </v-card-actions>
             </v-card>
@@ -55,9 +57,29 @@
 </template>
 
 <script>
+import Auth from '../../services/Auth'
 export default {
+  name: 'Login',
   props: {
     source: String
+  },
+  data () {
+    return {
+      username: '',
+      password: ''
+    }
+  },
+  methods: {
+    login () {
+      Auth.getToken({
+        username: this.username,
+        password: this.password
+      }).then(res => {
+        localStorage.setItem('cmsAdmin', res.token)
+        this.$store.commit('setToken', res.token)
+        this.$router.push('/')
+      })
+    }
   }
 }
 </script>

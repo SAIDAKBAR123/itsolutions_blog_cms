@@ -9,7 +9,7 @@
                          <v-col cols="auto"><v-btn large outlined class="mx-2"><v-icon left>mdi-eye-settings</v-icon> Preview</v-btn></v-col>
                          <v-col cols="auto" class="mx-2">
                              <v-row justify="center" class="py-0">
-                                    <v-col class="py-0" cols="auto"><v-btn large outlined color="grey" class="">Cancel</v-btn></v-col>
+                                    <v-col class="py-0" cols="auto"><v-btn large outlined color="grey" to="/blog" class="">Cancel</v-btn></v-col>
                                     <v-col class="py-0" cols="auto"><v-btn large color="primary" class="" @click="publish">Publish <v-icon right>mdi-menu-right-outline</v-icon></v-btn></v-col>
                              </v-row>
                          </v-col>
@@ -28,6 +28,7 @@
                                 label="Title"
                                 outlined
                                 dense
+                                v-model="title"
                                 ></v-text-field>
                          </v-col>
                      </v-row>
@@ -43,13 +44,6 @@
                                 />
                          </v-col>
                      </v-row>
-                     <v-row>
-                         <v-col>
-                             <v-card>
-                                 <v-card-text v-html="content"></v-card-text>
-                             </v-card>
-                         </v-col>
-                     </v-row>
                  </v-card>
              </v-col>
              <v-col cols="3">
@@ -63,8 +57,9 @@
                               <!-- <v-file-input dense class="py-3 px-1" v-model="api" outlined accept="image/*" label="Upload image"></v-file-input> -->
                         </v-card>
                     </v-col>
-                    <v-col cols="12">
-                         <div @click="eventAccured($event)" class="input_img_layout flex flex-center justify-center">
+                    <v-col cols="12" v-if="!mainImage.url.length >0">
+                      <input v-show="false" type="file" id="file" ref="fileInput"  v-on:change="handleFileUpload"/>
+                         <div @click="onPickFile" class="input_img_layout flex flex-center justify-center">
                              <v-row justify="center">
                                  <v-col cols="auto">
                                      <v-icon color="grey lighten-4" size="80">mdi-cloud-upload-outline</v-icon>
@@ -76,6 +71,17 @@
                              </v-row>
                          </div>
                     </v-col>
+                    <v-col cols="12" v-else>
+                        <v-img :src="mainImage.url">
+                          <div class="hover__img" >
+                              <v-row justify="end">
+                                  <v-col cols="auto" class="py-0" @click="removeImage">
+                                     <v-icon color="white" size="30" dark>mdi-close-circle</v-icon>
+                                  </v-col>
+                              </v-row>
+                          </div>
+                        </v-img>
+                    </v-col>
                 </v-row>
                 <v-row class="mt-2" justify="center" align="center">
                     <v-col cols="12" class="py-0">
@@ -83,11 +89,12 @@
                     </v-col>
                          <v-col align-self="center" cols="12">
                                  <v-combobox
-                                    v-model="chips"
-                                    :items="items"
+                                    v-model="selectedTags"
+                                    :items="tagsList"
+                                     item-text="name"
                                     chips
                                     clearable
-                                    label="Tags"
+                                    label="tags"
                                     multiple
                                     solo
                                     >
@@ -99,11 +106,9 @@
                                         :input-value="selected"
                                         label
                                         outlined
-                                        close
                                         @click="select"
-                                        @click:close="remove(item)"
                                     >
-                                        <strong>{{ item }}</strong>&nbsp;
+                                        <strong>{{ item.name }}</strong>&nbsp;
                                     </v-chip>
                                     </template>
                                  </v-combobox>
@@ -118,7 +123,7 @@
                                      </v-list-item>
                                      <v-divider></v-divider>
                                      <v-list-item>
-                                         <span class="flex justify-space-between">Show visitors amount: </span><v-switch v-model="commentAllowed"></v-switch>
+                                         <span class="flex justify-space-between">Show visitors amount: </span><v-switch v-model="viewAllowed"></v-switch>
                                      </v-list-item>
                                  </v-list>
                              </v-card>
@@ -132,19 +137,36 @@
 </template>
 
 <script>
+import Blogs from '../services/Blogs'
+import Tags from '../services/Tags'
 export default {
   data () {
     return {
       commentAllowed: true,
+      viewAllowed: false,
       radioGroup: null,
+      tagsList: [],
       attrs: 'asa',
+      title: '',
+      mainImage: {
+        url: ''
+      },
+      imageFile: new FormData(),
       api: '',
-      chips: ['computer'],
-      items: ['computer', 'science', 'bialogy', 'working', 'Cisco', 'Data Flow'],
+      selected: [],
+      selectedTags: [],
       content: '<span class="nunito fs_28_bold" >Stay home</span>',
       editorOption: {
         // Some Quill options...
       }
+    }
+  },
+  watch: {
+    selectedTags: {
+      handler (val) {
+        console.log(val)
+      },
+      deep: true
     }
   },
   computed: {
@@ -153,39 +175,77 @@ export default {
     }
   },
   methods: {
+    removeImage () {
+      this.mainImage.url = ''
+    },
     publish () {
-      this.$notify({
-        group: 'foo',
-        title: 'Important message',
-        text: 'Hello user! This is a notification!'
+      const formData = {
+        body: this.content,
+        title: this.title,
+        mainImageId: this.mainImage.id,
+        isCommentable: this.commentAllowed ? 1 : 0,
+        tags: [1, 2, 3]
+      }
+      Blogs.postNewBlog(formData).then(res => {
+        console.log(res)
+        this.$notify({
+          title: 'Article has posted successfully',
+          color: 'success'
+        })
+        this.$router.push('/blog')
+      }).catch(err => console.log(err))
+    },
+    onPickFile () {
+      this.$refs.fileInput.click()
+    },
+    handleFileUpload (event) {
+      const files = event.target.files
+      const filename = files[0].name
+      if (filename.lastIndexOf('.') <= 0) {
+        return alert('please, input correct image file!')
+      }
+      const fileReader = new FileReader()
+      fileReader.addEventListener('load', () => {
       })
+      fileReader.readAsDataURL(files[0])
+      this.imageFile.append('file', files[0])
+
+      Blogs.postMainImage(this.imageFile).then(res => {
+        this.mainImage = res
+      }).catch(err => console.log(err))
+    },
+    getAll () {
+      Tags.getAll().then(res => {
+        this.tagsList = res
+      }).catch(err => console.log(err))
     },
     onEditorBlur (quill) {
-      console.log('editor blur!', quill)
+      // console.log('editor blur!', quill)
     },
     onEditorFocus (quill) {
-      console.log('editor focus!', quill)
+      // console.log('editor focus!', quill)
     },
     onEditorReady (quill) {
-      console.log('editor ready!', quill)
+      // console.log('editor ready!', quill)
     },
     onEditorChange ({ quill, html, text }) {
-      console.log('editor change!', quill, html, text)
+      // console.log('editor change!', quill, html, text)
       this.content = html
     },
     eventAccured (val) {
       alert('Drag and drop zone')
       console.log(val)
     },
-    maydahmad () {
-      const image = URL.createObjectURL(this.api.target.files[0])
-      console.log(image)
-      console.log(this.api.target)
-    },
     remove (item) {
-      this.chips.splice(this.chips.indexOf(item), 1)
-      this.chips = [...this.chips]
+      // console.log(item)
+      // const num = this.selectedTags.filter((el, index) => {
+      //   if (el.id === item.id) { this.selectedTags = this.selectedTags.slice(index, -1) }
+    //  })
+    // console.log(num)
     }
+  },
+  created () {
+    this.getAll()
   }
 
 }
@@ -200,5 +260,17 @@ export default {
   padding: 10px;
   width: 100%;
   height: 10rem;
+}
+.hover__img{
+  transition: all 0.7s ease;
+  padding: 2px;
+  height: 100%;
+  cursor: pointer;
+
+}
+.hover__img:hover{
+  background:rgba(31, 31, 31, 0.788);
+  height: 100%;
+
 }
 </style>

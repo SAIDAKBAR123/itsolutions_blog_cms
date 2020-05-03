@@ -9,13 +9,13 @@ export function execute (promise) {
           if (err.response) {
             // eslint-disable-next-line eqeqeq
             if (err.response.status == 404) {
-              alert('Invalid user inputs, try it again')
+              alert('')
             }
             if (err.response.status == 401) {
               // store.commit('setTokenExpired', true)
               router.push('/pages/login')
             }
-            reject(new Error(err.response.status))
+            reject(new Error(err.response))
           }
           reject(new Error(err))
         }
@@ -35,8 +35,7 @@ export default () => {
   return axios.create({
     baseURL: process.env.VUE_APP_BASE_URL,
     headers: {
-      // Authorization: `Bearer ${localStorage.getItem('access_token')}`
-      // Authorization: `Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOjIsInJvbGVJZCI6MiwicGVybWlzc2lvbnMiOlt7ImlkIjo1fSx7ImlkIjo2fSx7ImlkIjo3fSx7ImlkIjo4fSx7ImlkIjo5fSx7ImlkIjoxMH0seyJpZCI6MTF9LHsiaWQiOjEyfSx7ImlkIjoxM31dLCJpYXQiOjE1ODE3NjcwMDQsImV4cCI6MTU4MTc2ODgwNH0.624qNh25QK3u7iPYJtAeiVXYZrbKvfylqKIUJQW6Ank`
+      Authorization: `Bearer ${localStorage.getItem('cmsAdmin')}`
     }
   })
 }
