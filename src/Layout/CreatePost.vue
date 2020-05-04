@@ -6,11 +6,11 @@
                  <v-card flat tile>
                        <p class="nunito fs_28 pa-3">New Post</p>
                      <v-row justify="space-between">
-                         <v-col cols="auto"><v-btn large outlined class="mx-2"><v-icon left>mdi-eye-settings</v-icon> Preview</v-btn></v-col>
+                         <v-col cols="auto"><v-btn @click="saveAsDraft" large outlined class="mx-2"><v-icon left>mdi-eye-settings</v-icon> Default</v-btn></v-col>
                          <v-col cols="auto" class="mx-2">
                              <v-row justify="center" class="py-0">
                                     <v-col class="py-0" cols="auto"><v-btn large outlined color="grey" to="/blog" class="">Cancel</v-btn></v-col>
-                                    <v-col class="py-0" cols="auto"><v-btn large color="primary" class="" @click="publish">Publish <v-icon right>mdi-menu-right-outline</v-icon></v-btn></v-col>
+                                    <v-col class="py-0" cols="auto"><v-btn large :disabled="!isPublishAllowed" color="primary" class="" @click="publish">Publish <v-icon right>mdi-menu-right-outline</v-icon></v-btn></v-col>
                              </v-row>
                          </v-col>
                      </v-row>
@@ -75,7 +75,7 @@
                         <v-img :src="mainImage.url">
                           <div class="hover__img" >
                               <v-row justify="end">
-                                  <v-col cols="auto" class="py-0" @click="removeImage">
+                                  <v-col cols="auto" class="py-0" @click="removeImage(mainImage.id)">
                                      <v-icon color="white" size="30" dark>mdi-close-circle</v-icon>
                                   </v-col>
                               </v-row>
@@ -89,6 +89,7 @@
                     </v-col>
                          <v-col align-self="center" cols="12">
                                  <v-combobox
+                                    return-object
                                     v-model="selectedTags"
                                     :items="tagsList"
                                      item-text="name"
@@ -108,7 +109,7 @@
                                         outlined
                                         @click="select"
                                     >
-                                        <strong>{{ item.name }}</strong>&nbsp;
+                                        <strong>{{item.name}}</strong>&nbsp;
                                     </v-chip>
                                     </template>
                                  </v-combobox>
@@ -123,7 +124,7 @@
                                      </v-list-item>
                                      <v-divider></v-divider>
                                      <v-list-item>
-                                         <span class="flex justify-space-between">Show visitors amount: </span><v-switch v-model="viewAllowed"></v-switch>
+                                         <span class="flex justify-space-between">Save as Draft: </span><v-switch v-model="saveStatus"></v-switch>
                                      </v-list-item>
                                  </v-list>
                              </v-card>
@@ -143,13 +144,14 @@ export default {
   data () {
     return {
       commentAllowed: true,
-      viewAllowed: false,
+      saveStatus: false,
       radioGroup: null,
       tagsList: [],
-      attrs: 'asa',
+      attrs: { id: 'sadsa' },
       title: '',
       mainImage: {
-        url: ''
+        url: '',
+        id: ''
       },
       imageFile: new FormData(),
       api: '',
@@ -162,21 +164,30 @@ export default {
     }
   },
   watch: {
-    selectedTags: {
-      handler (val) {
-        console.log(val)
-      },
-      deep: true
-    }
+    // selectedTags: {
+    //   handler (val) {
+    //     console.log(val)
+    //   },
+    //   deep: true
+    // }
   },
   computed: {
+    isPublishAllowed () {
+      return this.title && this.mainImage.url && this.content && this.selectedTags.length > 0
+    },
     editor () {
       return this.$refs.myQuillEditor.quill
     }
   },
   methods: {
-    removeImage () {
-      this.mainImage.url = ''
+    removeImage (id) {
+      Blogs.deleteMainImage(id).then(res => {
+        this.mainImage.url = ''
+        this.imageFile = new FormData()
+        console.log(res)
+      }).catch(err => console.log(err))
+    },
+    saveAsDraft () {
     },
     publish () {
       const formData = {
@@ -184,13 +195,16 @@ export default {
         title: this.title,
         mainImageId: this.mainImage.id,
         isCommentable: this.commentAllowed ? 1 : 0,
-        tags: [1, 2, 3]
+        tags: this.selectedTags.map(el => { return { id: el.id } }),
+        status: this.saveStatus ? 0 : 1
       }
+      console.log(formData)
       Blogs.postNewBlog(formData).then(res => {
         console.log(res)
         this.$notify({
+          group: 'foo',
           title: 'Article has posted successfully',
-          color: 'success'
+          type: 'success'
         })
         this.$router.push('/blog')
       }).catch(err => console.log(err))
@@ -234,6 +248,9 @@ export default {
     },
     eventAccured (val) {
       alert('Drag and drop zone')
+      console.log(val)
+    },
+    getType (val) {
       console.log(val)
     },
     remove (item) {

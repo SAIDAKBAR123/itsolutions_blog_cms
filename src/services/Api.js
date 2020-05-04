@@ -9,7 +9,6 @@ export function execute (promise) {
           if (err.response) {
             // eslint-disable-next-line eqeqeq
             if (err.response.status == 404) {
-              alert('')
             }
             if (err.response.status == 401) {
               // store.commit('setTokenExpired', true)

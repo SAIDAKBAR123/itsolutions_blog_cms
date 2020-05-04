@@ -29,17 +29,17 @@ const routes = [
         component: () => import('../views/Blog.vue')
       },
       {
-        path: '/blog/update-post/:id',
-        props: true,
-        name: 'EditPost',
-        accessControl: true,
-        component: () => import('../Layout/EditPost.vue')
-      },
-      {
         path: '/create-post',
         name: 'NewPost',
         accessControl: true,
         component: () => import('../Layout/CreatePost.vue')
+      },
+      {
+        path: '/edit-post/:id',
+        name: 'EditPost',
+        props: true,
+        accessControl: true,
+        component: () => import('../Layout/EditPost.vue')
       },
       {
         path: '/portfolio',

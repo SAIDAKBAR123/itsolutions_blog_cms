@@ -6,11 +6,11 @@
                  <v-card flat tile>
                        <p class="nunito fs_28 pa-3">Edit Post</p>
                      <v-row justify="space-between">
-                         <v-col cols="auto"><v-btn large outlined class="mx-2"><v-icon left>mdi-eye-settings</v-icon> Preview</v-btn></v-col>
+                         <v-col cols="auto"><v-btn @click="saveAsDraft" large outlined class="mx-2"><v-icon left>mdi-eye-settings</v-icon> Default</v-btn></v-col>
                          <v-col cols="auto" class="mx-2">
                              <v-row justify="center" class="py-0">
-                                    <v-col class="py-0" cols="auto"><v-btn large outlined color="grey" class="">Cancel</v-btn></v-col>
-                                    <v-col class="py-0" cols="auto"><v-btn large color="success" class="">Save <v-icon right>mdi-menu-right-outline</v-icon></v-btn></v-col>
+                                    <v-col class="py-0" cols="auto"><v-btn large outlined color="grey" to="/blog" class="">Cancel</v-btn></v-col>
+                                    <v-col class="py-0" cols="auto"><v-btn large :disabled="!isPublishAllowed" color="success" class="" @click="savePost">Save <v-icon right>mdi-menu-down</v-icon></v-btn></v-col>
                              </v-row>
                          </v-col>
                      </v-row>
@@ -28,6 +28,7 @@
                                 label="Title"
                                 outlined
                                 dense
+                                v-model="title"
                                 ></v-text-field>
                          </v-col>
                      </v-row>
@@ -35,19 +36,12 @@
                          <v-col class="mx-2">
                                <quill-editor
                                 ref="myQuillEditor"
-                                v-model="content"
+                                v-model="body"
                                 :options="editorOption"
                                 @blur="onEditorBlur($event)"
                                 @focus="onEditorFocus($event)"
                                 @ready="onEditorReady($event)"
                                 />
-                         </v-col>
-                     </v-row>
-                     <v-row>
-                         <v-col>
-                             <v-card>
-                                 <v-card-text v-html="content"></v-card-text>
-                             </v-card>
                          </v-col>
                      </v-row>
                  </v-card>
@@ -63,8 +57,9 @@
                               <!-- <v-file-input dense class="py-3 px-1" v-model="api" outlined accept="image/*" label="Upload image"></v-file-input> -->
                         </v-card>
                     </v-col>
-                    <v-col cols="12">
-                         <div @click="eventAccured($event)" class="input_img_layout flex flex-center justify-center">
+                    <v-col cols="12" v-if="!mainImage.url.length >0">
+                      <input v-show="false" type="file" id="file" ref="fileInput"  v-on:change="handleFileUpload"/>
+                         <div @click="onPickFile" class="input_img_layout flex flex-center justify-center">
                              <v-row justify="center">
                                  <v-col cols="auto">
                                      <v-icon color="grey lighten-4" size="80">mdi-cloud-upload-outline</v-icon>
@@ -76,6 +71,17 @@
                              </v-row>
                          </div>
                     </v-col>
+                    <v-col cols="12" v-else>
+                        <v-img :src="mainImage.url">
+                          <div class="hover__img" >
+                              <v-row justify="end">
+                                  <v-col cols="auto" class="py-0" @click="removeImage(mainImage.id)">
+                                     <v-icon color="white" size="30" dark>mdi-close-circle</v-icon>
+                                  </v-col>
+                              </v-row>
+                          </div>
+                        </v-img>
+                    </v-col>
                 </v-row>
                 <v-row class="mt-2" justify="center" align="center">
                     <v-col cols="12" class="py-0">
@@ -83,11 +89,12 @@
                     </v-col>
                          <v-col align-self="center" cols="12">
                                  <v-combobox
-                                    v-model="chips"
-                                    :items="items"
+                                    v-model="selectedTags"
+                                    :items="tagsList"
+                                     item-text="name"
                                     chips
                                     clearable
-                                    label="Tags"
+                                    label="tags"
                                     multiple
                                     solo
                                     >
@@ -99,11 +106,9 @@
                                         :input-value="selected"
                                         label
                                         outlined
-                                        close
                                         @click="select"
-                                        @click:close="remove(item)"
                                     >
-                                        <strong>{{ item }}</strong>&nbsp;
+                                        <strong>{{ item.name }}</strong>&nbsp;
                                     </v-chip>
                                     </template>
                                  </v-combobox>
@@ -118,7 +123,7 @@
                                      </v-list-item>
                                      <v-divider></v-divider>
                                      <v-list-item>
-                                         <span class="flex justify-space-between">Show visitors amount: </span><v-switch v-model="commentAllowed"></v-switch>
+                                         <span class="flex justify-space-between">Save as Draft: </span><v-switch v-model="saveStatus"></v-switch>
                                      </v-list-item>
                                  </v-list>
                              </v-card>
@@ -132,53 +137,135 @@
 </template>
 
 <script>
+import Blogs from '../services/Blogs'
+import Tags from '../services/Tags'
 export default {
+  props: ['id'],
   data () {
     return {
       commentAllowed: true,
+      saveStatus: false,
       radioGroup: null,
+      tagsList: [],
       attrs: 'asa',
-      api: '',
-      chips: ['computer'],
-      items: ['computer', 'science', 'bialogy', 'working', 'Cisco', 'Data Flow'],
-      content: '<span class="nunito fs_28_bold" >Stay home</span>',
+      title: '',
+      mainImage: {
+        url: '',
+        id: ''
+      },
+      imageFile: new FormData(),
+      selected: [],
+      selectedTags: [],
+      body: '<span class="nunito fs_28_bold" >Stay home</span>',
       editorOption: {
         // Some Quill options...
       }
     }
   },
   computed: {
+    isPublishAllowed () {
+      return this.title && this.mainImage.url && this.body && this.selectedTags.length > 0
+    },
     editor () {
       return this.$refs.myQuillEditor.quill
     }
   },
   methods: {
+    removeImage (id) {
+      console.log(id)
+      this.mainImage = {
+        id: '',
+        url: ''
+      }
+      this.imageFile = new FormData()
+    },
+    saveAsDraft () {
+    },
+    savePost () {
+      const formData = {
+        body: this.body,
+        title: this.title,
+        isCommentable: this.commentAllowed ? 1 : 0,
+        tags: this.selectedTags.map(el => { return { id: el.id } }),
+        status: this.saveStatus ? 0 : 1
+      }
+      console.log(formData)
+      Blogs.updateSinglePost(this.id, formData).then(res => {
+        console.log(res)
+        this.$notify({
+          group: 'foo',
+          title: 'Article has updated successfully',
+          type: 'success'
+        })
+        this.$router.push('/blog')
+      }).catch(err => console.log(err))
+    },
+    onPickFile () {
+      this.$refs.fileInput.click()
+    },
+    handleFileUpload (event) {
+      const files = event.target.files
+      const filename = files[0].name
+      if (filename.lastIndexOf('.') <= 0) {
+        return alert('please, input correct image file!')
+      }
+      const fileReader = new FileReader()
+      fileReader.addEventListener('load', () => {
+      })
+      fileReader.readAsDataURL(files[0])
+      this.imageFile.append('file', files[0])
+      console.log(this.imageFile)
+      Blogs.updateMainImage(this.id, this.imageFile).then(res => {
+        console.log(res)
+        this.mainImage = res
+      }).catch(err => console.log(err))
+    },
+    getAll () {
+      Tags.getAll().then(res => {
+        this.tagsList = res
+      }).catch(err => console.log(err))
+    },
+
+    getSinglePost () {
+      Blogs.getSinglePost(this.id).then(res => {
+        console.log(res)
+        this.body = res.body
+        this.title = res.title
+        this.mainImage.url = res.mainImage.mainImageUrl
+        this.mainImage.id = res.mainImage.id
+        this.selectedTags = res.tags
+        this.saveStatus = res.saveStatus
+      }).catch(err => console.log(err))
+    },
+
     onEditorBlur (quill) {
-      console.log('editor blur!', quill)
+      // console.log('editor blur!', quill)
     },
     onEditorFocus (quill) {
-      console.log('editor focus!', quill)
+      // console.log('editor focus!', quill)
     },
     onEditorReady (quill) {
-      console.log('editor ready!', quill)
+      // console.log('editor ready!', quill)
     },
     onEditorChange ({ quill, html, text }) {
-      console.log('editor change!', quill, html, text)
-      this.content = html
+      // console.log('editor change!', quill, html, text)
+      this.body = html
     },
     eventAccured (val) {
       alert('Drag and drop zone')
       console.log(val)
     },
-    maydahmad () {
-      const image = URL.createObjectURL(this.api.target.files[0])
-      console.log(image)
-      console.log(this.api.target)
-    },
     remove (item) {
-      this.chips.splice(this.chips.indexOf(item), 1)
-      this.chips = [...this.chips]
+      // console.log(item)
+      // const num = this.selectedTags.filter((el, index) => {
+      //   if (el.id === item.id) { this.selectedTags = this.selectedTags.slice(index, -1) }
+    //  })
+    // console.log(num)
     }
+  },
+  created () {
+    this.getSinglePost()
+    this.getAll()
   }
 
 }
@@ -193,5 +280,17 @@ export default {
   padding: 10px;
   width: 100%;
   height: 10rem;
+}
+.hover__img{
+  transition: all 0.7s ease;
+  padding: 2px;
+  height: 100%;
+  cursor: pointer;
+
+}
+.hover__img:hover{
+  background:rgba(31, 31, 31, 0.788);
+  height: 100%;
+
 }
 </style>

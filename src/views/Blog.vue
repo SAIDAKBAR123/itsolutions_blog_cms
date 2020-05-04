@@ -38,11 +38,11 @@
              <v-col cols="12">
                  <v-card class="px-3 mb-3" flat tile>
                      <v-row justify="space-between">
-                     <v-col cols="2">
+                     <v-col cols="2" align-self="center">
                           <v-select
                             dense
                             :items="['hello']"
-                            label="Outlined style"
+                            label="sort by"
                             outlined
                             hide-details
                             ></v-select>
@@ -53,6 +53,7 @@
                             v-model="search"
                             append-icon="mdi-image-search-outline"
                             label="Search"
+                            class="pt-0"
                             single-line
                             hide-details
                             ></v-text-field>
@@ -88,7 +89,7 @@
                         <template v-slot:item.action="{ item }">
                           <v-row>
                               <v-col cols="auto">
-                                  <edit-blog-dialog />
+                                  <v-btn text color="" :to="'/edit-post/'+item.id" small fab><v-icon>mdi-fountain-pen-tip</v-icon></v-btn>
                               </v-col>
                                <v-col cols="auto">
                                   <v-btn @click="pw(item)" text small fab><v-icon>{{ item.status ? 'mdi-eye-outline':  'mdi-eye-off-outline'}}</v-icon></v-btn>
@@ -107,7 +108,6 @@
 </template>
 
 <script>
-import EditBlogDialog from '../components/Dialogs/EditBlogDialog'
 import DeleteBlogDialog from '../components/Dialogs/DeleteBlogDialog'
 import Blogs from '../services/Blogs'
 export default {
@@ -123,7 +123,6 @@ export default {
     }
   },
   components: {
-    EditBlogDialog,
     DeleteBlogDialog
   },
   data () {
