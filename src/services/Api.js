@@ -14,7 +14,7 @@ export function execute (promise) {
               // store.commit('setTokenExpired', true)
               router.push('/pages/login')
             }
-            reject(new Error(err.response))
+            reject((err.response))
           }
           reject(new Error(err))
         }

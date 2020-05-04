@@ -187,11 +187,10 @@ export default {
         title: this.title,
         isCommentable: this.commentAllowed ? 1 : 0,
         tags: this.selectedTags.map(el => { return { id: el.id } }),
-        status: this.saveStatus ? 0 : 1
+        status: parseInt(this.saveStatus ? '1' : '0')
       }
-      console.log(formData)
+
       Blogs.updateSinglePost(this.id, formData).then(res => {
-        console.log(res)
         this.$notify({
           group: 'foo',
           title: 'Article has updated successfully',
@@ -210,13 +209,11 @@ export default {
         return alert('please, input correct image file!')
       }
       const fileReader = new FileReader()
-      fileReader.addEventListener('load', () => {
-      })
+      fileReader.addEventListener('load', () => {})
       fileReader.readAsDataURL(files[0])
       this.imageFile.append('file', files[0])
-      console.log(this.imageFile)
+
       Blogs.updateMainImage(this.id, this.imageFile).then(res => {
-        console.log(res)
         this.mainImage = res
       }).catch(err => console.log(err))
     },
@@ -228,13 +225,12 @@ export default {
 
     getSinglePost () {
       Blogs.getSinglePost(this.id).then(res => {
-        console.log(res)
         this.body = res.body
         this.title = res.title
         this.mainImage.url = res.mainImage.mainImageUrl
         this.mainImage.id = res.mainImage.id
         this.selectedTags = res.tags
-        this.saveStatus = res.saveStatus
+        this.saveStatus = res.status
       }).catch(err => console.log(err))
     },
 
@@ -250,10 +246,6 @@ export default {
     onEditorChange ({ quill, html, text }) {
       // console.log('editor change!', quill, html, text)
       this.body = html
-    },
-    eventAccured (val) {
-      alert('Drag and drop zone')
-      console.log(val)
     },
     remove (item) {
       // console.log(item)

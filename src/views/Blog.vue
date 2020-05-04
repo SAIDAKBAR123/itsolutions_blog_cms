@@ -95,12 +95,14 @@
                                   <v-btn @click="pw(item)" text small fab><v-icon>{{ item.status ? 'mdi-eye-outline':  'mdi-eye-off-outline'}}</v-icon></v-btn>
                               </v-col>
                               <v-col cols="auto">
-                                  <delete-blog-dialog />
+                                  <!-- <delete-blog-dialog :postId="item.id" /> -->
+                                   <v-btn text color="red lighten-1" @click="deletePost(item.id)" small fab><v-icon>mdi-trash-can-outline</v-icon></v-btn>
                               </v-col>
                           </v-row>
                         </template>
                     </v-data-table>
                  </v-card>
+                 <delete-blog-dialog v-if="deleteSinglePost.flag" :updateTable="this.getAll"  :post="deleteSinglePost" />
              </v-col>
          </v-row>
      </v-container>
@@ -115,6 +117,12 @@ export default {
     pw (item) {
       item.status = !item.status
     },
+    deletePost (id) {
+      this.deleteSinglePost = {
+        flag: true,
+        data: id
+      }
+    },
     getAll () {
       Blogs.getAllPosts().then(res => {
         console.log(res)
@@ -127,6 +135,10 @@ export default {
   },
   data () {
     return {
+      deleteSinglePost: {
+        flag: false,
+        data: ''
+      },
       search: '',
       eye: 'mdi-eye-off-outline',
       analysis: [
