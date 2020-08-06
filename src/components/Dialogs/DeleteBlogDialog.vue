@@ -7,8 +7,7 @@
          </v-card-title>
         <v-card-text
           >Doing so, your content will be archive in System. Later you can restore them
-          it</v-card-text
-        >
+          it</v-card-text>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn color="green darken-1" text @click="post.flag = false"

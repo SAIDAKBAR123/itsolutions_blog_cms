@@ -172,17 +172,17 @@ export default {
         name: 'Portfolio',
         path: '/portfolio',
         icon: 'mdi-file-document-edit-outline'
-      },
-      {
-        name: 'Settings',
-        path: '/settings',
-        icon: 'mdi-tools'
-      },
-      {
-        name: 'Comments & mails',
-        path: '/comments-list',
-        icon: 'mdi-comment-eye-outline'
       }
+      // {
+      //   name: 'Settings',
+      //   path: '/settings',
+      //   icon: 'mdi-tools'
+      // }
+      // {
+      //   name: 'Comments & mails',
+      //   path: '/comments-list',
+      //   icon: 'mdi-comment-eye-outline'
+      // }
     ]
   }),
   methods: {

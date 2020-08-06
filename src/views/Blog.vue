@@ -1,11 +1,11 @@
 <template>
   <div>
      <v-container>
-         <v-row justify="start" align="center">
-             <v-col v-for="(item, i) in analysis" :key="i" cols="3">
+          <v-row justify="space-between" align="center">
+             <v-col v-for="(item, i) in analysis" :key="i" sm="4" md="3" xl="3" cols="12">
                  <v-card tile flat>
                     <v-row justify="start" class="mx-auto">
-                        <v-col align-self="center" cols="3">
+                        <v-col align-self="center" cols="auto">
                             <v-avatar size="70" color="light-blue lighten-5">
                                  <v-icon class="#081F2E" size="40">
                                 {{item.icon}}
@@ -13,7 +13,7 @@
                             </v-avatar>
                         </v-col>
                         <v-col cols="auto" align-self="center">
-                                <p class="pb-0 text--secondary">{{item.name}}</p>
+                                <p class="pb-0 body-1 text--secondary">{{item.name}}</p>
                                 <span class="display-1 font-weight-thin">{{item.value}}</span>
                         </v-col>
                     </v-row>
@@ -26,9 +26,6 @@
                      <v-row>
                          <v-col cols="auto">
                              <v-btn rounded to="/create-post" tile color="primary">Create Post <v-icon right>mdi-plus</v-icon></v-btn>
-                         </v-col>
-                          <v-col cols="auto">
-                             <v-btn rounded text color="primary">create Forum<v-icon right>mdi-bell</v-icon></v-btn>
                          </v-col>
                      </v-row>
                  </v-card>
@@ -74,7 +71,7 @@
                         </template>
                         <template v-slot:item.image="{ item }">
                           <v-card tile flat color="transparent" max-width="120" class="pa-3">
-                              <v-img  max-width="120" :src="item.mainImage.mainImageUrl"></v-img>
+                              <v-img contain width="120" height="100" :src="item.mainImage.mainImageUrl"></v-img>
                           </v-card>
                         </template>
                          <template v-slot:item.status="{ item }">

@@ -223,7 +223,7 @@ export default {
       })
       fileReader.readAsDataURL(files[0])
       this.imageFile.append('file', files[0])
-
+      console.log(this.imageFile)
       Blogs.postMainImage(this.imageFile).then(res => {
         this.mainImage = res
       }).catch(err => console.log(err))

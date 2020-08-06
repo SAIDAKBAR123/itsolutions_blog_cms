@@ -41,7 +41,7 @@
           </v-col>
         </v-row>
         <v-row>
-          <v-col md="3" cols="12" v-for="(item,i) in items" :key="i">
+          <v-col md="3" cols="12" v-for="(item,i) in projects" :key="i">
               <v-hover v-slot:default="{ hover }">
                 <v-card class="px-0" :elevation="hover ? 12: 0" outlined>
                   <v-card-title class="py-0 px-1">
@@ -59,7 +59,7 @@
                   >
                   <v-card-title v-text="item.title"></v-card-title>
                   </v-img>
-                     <v-row justify-md="">
+                     <v-row justify-md="start">
                         <v-col cols="auto">
                           <v-btn large text block tile :ripple="false"><v-icon left>mdi-eye</v-icon>{{item.view}}</v-btn>
                         </v-col>
@@ -78,8 +78,9 @@
           <v-col cols="auto" >
              <div class="text-center">
               <v-pagination
+              v-if="projects.length > 0"
                 v-model="page"
-                :length="4"
+                :length="projects.length"
                 prev-icon="mdi-menu-left"
                 next-icon="mdi-menu-right"
               ></v-pagination>
@@ -95,66 +96,14 @@ export default {
 
   data () {
     return {
-      items: [
+      menu2: '',
+      page: 1,
+      date: new Date(),
+      projects: [
         {
           title: 'Дизайн сервиса нейросемантики',
           image: 'https://reconcept.ru/uploads/images/Portfolio/190802090855/1564736935_Xi.jpg',
           view: '2 321'
-        },
-        {
-          title: 'Интернет-магазин по продаже готовых проектов домов',
-          image: 'https://reconcept.ru/uploads/images/Portfolio/190311084515/1552293915_F7.jpg',
-          view: '2 321'
-        },
-        {
-          title: 'Создание сайта и стиля для агенства недвижимости UK Property Advisors Ltd',
-          image: 'https://reconcept.ru/uploads/images/Portfolio/190311084405/1552293845_qY.jpg',
-          view: '543'
-        },
-        {
-          title: 'Промо-сайт Heron Lite',
-          image: 'https://reconcept.ru/uploads/images/Portfolio/190606160356/1559837036_oh.jpg',
-          view: '543'
-        },
-        {
-          title: 'Промо-сайт для стартапа дактилоскопических датчиков RFA из Италии',
-          image: 'https://reconcept.ru/uploads/images/Portfolio/190311083250/1552293170_gG.jpg',
-          view: '3 432'
-        },
-        {
-          title: 'Интернет-магазин по продаже готовых проектов домов',
-          image: 'https://reconcept.ru/uploads/images/Portfolio/190311084515/1552293915_F7.jpg',
-          view: '2 321'
-        },
-        {
-          title: 'Создание сайта и стиля для агенства недвижимости UK Property Advisors Ltd',
-          image: 'https://reconcept.ru/uploads/images/Portfolio/190311084405/1552293845_qY.jpg',
-          view: '543'
-        },
-        {
-          title: 'Промо-сайт Heron Lite',
-          image: 'https://reconcept.ru/uploads/images/Portfolio/190606160356/1559837036_oh.jpg',
-          view: '543'
-        },
-        {
-          title: 'Промо-сайт для стартапа дактилоскопических датчиков RFA из Италии',
-          image: 'https://reconcept.ru/uploads/images/Portfolio/190311083250/1552293170_gG.jpg',
-          view: '3 432'
-        },
-        {
-          title: 'Интернет-магазин по продаже готовых проектов домов',
-          image: 'https://reconcept.ru/uploads/images/Portfolio/190311084515/1552293915_F7.jpg',
-          view: '2 321'
-        },
-        {
-          title: 'Создание сайта и стиля для агенства недвижимости UK Property Advisors Ltd',
-          image: 'https://reconcept.ru/uploads/images/Portfolio/190311084405/1552293845_qY.jpg',
-          view: '543'
-        },
-        {
-          title: 'Промо-сайт Heron Lite',
-          image: 'https://reconcept.ru/uploads/images/Portfolio/190606160356/1559837036_oh.jpg',
-          view: '543'
         }
       ]
     }
