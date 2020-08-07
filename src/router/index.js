@@ -54,6 +54,13 @@ const routes = [
         component: () => import('../Layout/CreateProject.vue')
       },
       {
+        path: '/portfolio/:id',
+        props: true,
+        name: 'CreateProjects',
+        accessControl: true,
+        component: () => import('../Layout/EditProject.vue')
+      },
+      {
         path: '/settings',
         name: 'Settings',
         accessControl: true,

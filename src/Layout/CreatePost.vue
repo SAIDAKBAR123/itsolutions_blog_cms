@@ -119,7 +119,7 @@
                          <v-col class="py-0">
                              <v-card tile flat>
                                  <v-list>
-                                     <v-list-item>
+                                     <v-list-item v-if="false">
                                         <span class="flex justify-space-between"> Leave Comments: </span><v-switch v-model="commentAllowed"></v-switch>
                                      </v-list-item>
                                      <v-divider></v-divider>

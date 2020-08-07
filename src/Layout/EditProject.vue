@@ -5,12 +5,11 @@
              <v-col cols="12">
                  <v-card flat tile>
                        <p class="nunito fs_28 pa-3">New Project</p>
-                     <v-row justify="space-between">
-                         <v-col cols="auto"><v-btn large outlined class="mx-2"><v-icon left>mdi-eye-settings</v-icon> Preview</v-btn></v-col>
+                     <v-row justify="end">
                          <v-col cols="auto" class="mx-2">
                              <v-row justify="center" class="py-0">
-                                    <v-col class="py-0" cols="auto"><v-btn large outlined color="grey" class="">Cancel</v-btn></v-col>
-                                    <v-col class="py-0" cols="auto"><v-btn @click="createPortfolio" large color="primary" class="">Publish <v-icon right>mdi-menu-right-outline</v-icon></v-btn></v-col>
+                                    <v-col class="py-0" cols="auto"><v-btn to="/portfolio" large outlined color="grey" class="">Cancel</v-btn></v-col>
+                                    <v-col class="py-0" cols="auto"><v-btn @click="updateProject" large color="success" class="">Save <v-icon right>mdi-menu-down-outline</v-icon></v-btn></v-col>
                              </v-row>
                          </v-col>
                      </v-row>
@@ -80,13 +79,6 @@
                                 </v-card>
                              </v-col>
                            </v-row>
-                            <v-row v-if="false" justify="center">
-                              <v-col cols="auto" >
-                                  <v-card class="">
-                                    sdasdas
-                                  </v-card>
-                              </v-col>
-                            </v-row>
                          </v-col>
                      </v-row>
                      <v-row>
@@ -106,7 +98,7 @@
              <v-col cols="3">
                  <v-card tile flat class="pa-3">
                      <v-row justify="center" align="center">
-                         <v-col cols="12">
+                          <v-col cols="12">
                            <v-select
                               v-model="chosenCategory"
                               return-object
@@ -117,12 +109,12 @@
                               label="Product category"
                             ></v-select>
                           </v-col>
-                    <v-col cols="12">
+                     <v-col cols="auto">
                         <span class="flex justify-space-between">Save as Draft: </span><v-switch v-model="saveStatus"></v-switch>
                     </v-col>
                 </v-row>
                  </v-card>
-            </v-col>
+                 </v-col>
               </v-row>
      </v-container>
   </div>
@@ -135,8 +127,10 @@ import Categories from '../services/Categories'
 export default {
   data () {
     return {
-      title: '',
       saveStatus: false,
+      chosenCategory: {},
+      categories: [],
+      title: '',
       url: 'http://example.com',
       content: '<span class="nunito fs_28_bold" >Stay home</span>',
       editorOption: {
@@ -146,10 +140,8 @@ export default {
         url: '',
         id: ''
       },
-      chosenCategory: {},
       imagesForm: new FormData(),
-      imageList: [],
-      categories: []
+      imageList: []
     }
   },
   computed: {
@@ -158,13 +150,25 @@ export default {
     }
   },
   methods: {
+    getSingleProject () {
+      Portfolio.getSingle(this.$route.params.id).then(res => {
+        console.log(res)
+        this.content = res.content
+        this.imageList = res.images
+        this.url = res.url
+        this.title = res.title
+        this.chosenCategory = res.category
+      }).catch(err => {
+        console.log(err)
+      })
+    },
     onPickImages () {
       this.$refs.imagesList.click()
     },
     onPickFile () {
 
     },
-    createPortfolio () {
+    updateProject () {
       const data = {
         title: this.title,
         content: this.content,
@@ -173,7 +177,7 @@ export default {
         categoryId: this.chosenCategory.id
       }
       console.log(data)
-      Portfolio.createNewProject(data).then(res => {
+      Portfolio.updateProject(this.$route.params.id, data).then(res => {
         console.log(res)
         this.$notify({
           group: 'foo',
@@ -245,6 +249,7 @@ export default {
   },
   created () {
     this.getCategories()
+    this.getSingleProject()
   }
 
 }

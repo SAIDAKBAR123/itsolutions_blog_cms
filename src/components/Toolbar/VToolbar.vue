@@ -111,11 +111,11 @@
                       <v-list-item-content>
                         <v-list-item-title>
                             <span class=" nunito">
-                                Saidakbar Makhmudkhujaev
+                                ITSOLUTIONS
                             </span>
                           </v-list-item-title>
                           <v-list-item-subtitle class=" nunito-sans-default">
-                            Visit your profile
+                            admin
                           </v-list-item-subtitle>
                       </v-list-item-content>
                     </v-list-item>
