@@ -54,3 +54,6 @@ font-size: 20px;
 .fs_header_2{
     font-size: 3rem;
 }
+body {
+    overflow: hidden !important; /* Hide scrollbars */
+  }

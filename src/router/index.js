@@ -13,6 +13,7 @@ const routes = [
       {
         path: '/',
         name: 'Home',
+        redirect: '/blog',
         component: Home,
         accessControl: true
       },

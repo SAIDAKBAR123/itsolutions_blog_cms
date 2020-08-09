@@ -25,7 +25,7 @@
               <v-hover v-slot:default="{ hover }">
                 <v-card class="px-0" :elevation="hover ? 12: 0" outlined>
                   <v-card-title class="py-0 px-1">
-                      <span class="text-caption">{{ item.createdAt | moment('Do MMM, YYYY HH:mm') }}</span>
+                      <span class="text-caption nunito">{{ item.createdAt | moment('Do MMM, YYYY HH:mm') }}</span>
                       <v-spacer></v-spacer>
                       <v-btn color="#081F2E" fab text small :to="`/portfolio/${item.id}`"><v-icon>mdi-pen</v-icon></v-btn>
                       <v-btn color="red lighten-1" fab text small @click="deleteProject(item.id)"><v-icon>mdi-delete</v-icon></v-btn>
@@ -33,19 +33,11 @@
                     <v-img
                      class="white--text align-end"
                     :src="item.images[0].url"
-                    height="200px"
+                    height="300px"
                     gradient="to bottom, rgba(0,0,0,.1), rgba(0,0,0,.8)"
                   >
-                  <v-card-title v-text="item.title"></v-card-title>
+                  <v-card-title class="nunito" v-text="item.title"></v-card-title>
                   </v-img>
-                     <v-row justify-md="start">
-                        <v-col cols="auto">
-                          <v-btn large text block tile :ripple="false"><v-icon left>mdi-eye</v-icon>{{item.view}}</v-btn>
-                        </v-col>
-                          <v-col cols="auto" class="px-0 ">
-                         <v-btn large text block tile :ripple="false"><v-icon left>mdi-comment-text-outline</v-icon>{{item.view}}</v-btn>
-                        </v-col>
-                     </v-row>
               </v-card>
               </v-hover>
           </v-col>

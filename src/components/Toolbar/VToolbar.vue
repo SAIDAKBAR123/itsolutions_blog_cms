@@ -158,11 +158,11 @@ export default {
       }
     ],
     sidebar: [
-      {
-        name: 'Dashboard',
-        path: '/',
-        icon: 'mdi-view-dashboard'
-      },
+      // {
+      //   name: 'Dashboard',
+      //   path: '/',
+      //   icon: 'mdi-view-dashboard'
+      // },
       {
         name: 'Blog',
         path: '/blog',

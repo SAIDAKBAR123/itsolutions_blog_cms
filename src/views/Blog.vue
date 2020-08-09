@@ -1,7 +1,7 @@
 <template>
   <div>
      <v-container>
-          <v-row justify="space-between" align="center">
+          <v-row justify="start" align="center">
              <v-col v-for="(item, i) in analysis" :key="i" sm="4" md="3" xl="3" cols="12">
                  <v-card tile flat>
                     <v-row justify="start" class="mx-auto">
@@ -38,7 +38,10 @@
                      <v-col cols="2" align-self="center">
                           <v-select
                             dense
-                            :items="['hello']"
+                            return-object
+                            v-model="chosenType"
+                            :items="filters"
+                            item-text="name"
                             label="sort by"
                             outlined
                             hide-details
@@ -64,7 +67,7 @@
                         :headers="headers"
                         :search="search"
                         :items="desserts"
-                        :items-per-page="10"
+                        :items-per-page="15"
                         class="elevation-0">
                         <template v-slot:header.name="{ header }">
                          {{ header.text.toUpperCase() }}
@@ -75,16 +78,16 @@
                           </v-card>
                         </template>
                          <template v-slot:item.status="{ item }">
-                          <v-chip :color="item.status ? 'light-green lighten-4' : 'deep-purple lighten-4'">{{item.status ? 'published': 'unpublished'}}</v-chip>
+                          <v-chip :color="item.status==1 ? 'light-green lighten-4' : 'red lighten-4'">{{item.status==1 ? 'published': 'unpublished'}}</v-chip>
                         </template>
                           <template v-slot:item.date="{ item }">
                          <span>{{item.createdAt | moment('Do MMM, YYYY')}}</span>
                         </template>
                         <template v-slot:item.time="{ item }">
-                         <span>{{item.createdAt | moment('h:mm:ss a')}}</span>
+                         <span>{{item.createdAt | moment('HH:mm:ss a')}}</span>
                         </template>
                         <template v-slot:item.action="{ item }">
-                          <v-row>
+                          <v-row v-if="item.status == 1">
                               <v-col cols="auto">
                                   <v-btn text color="" :to="'/edit-post/'+item.id" small fab><v-icon>mdi-fountain-pen-tip</v-icon></v-btn>
                               </v-col>
@@ -109,56 +112,48 @@
 <script>
 import DeleteBlogDialog from '../components/Dialogs/DeleteBlogDialog'
 import Blogs from '../services/Blogs'
+import Stats from '../services/Stats'
 export default {
-  methods: {
-    pw (item) {
-      item.status = !item.status
-    },
-    deletePost (id) {
-      this.deleteSinglePost = {
-        flag: true,
-        data: id
-      }
-    },
-    getAll () {
-      Blogs.getAllPosts().then(res => {
-        console.log(res)
-        this.desserts = res
-      }).catch(err => console.log(err))
-    }
-  },
-  components: {
-    DeleteBlogDialog
-  },
   data () {
     return {
+      chosenType: { path: '', name: 'Active posts' },
       deleteSinglePost: {
         flag: false,
         data: ''
       },
+      filters: [{
+        path: '?archived=true',
+        name: 'Archived posts'
+      },
+      {
+        path: '',
+        name: 'Active posts'
+      }
+      ],
       search: '',
       eye: 'mdi-eye-off-outline',
       analysis: [
         {
-          icon: 'mdi-script-outline',
+          icon: 'mdi-bullhorn',
           name: 'Total Post',
           value: '394'
         },
         {
-          icon: 'mdi-account-supervisor',
+          icon: 'mdi-note-text',
           name: 'Total Visitors',
           value: '494'
-        },
-        {
-          icon: 'mdi-note-text',
-          name: 'Total Drafts',
-          value: '3'
-        },
-        {
-          icon: 'mdi-seal',
-          name: 'Total assets',
-          value: '394'
         }
+        // },
+        // {
+        //   icon: 'mdi-note-text',
+        //   name: 'Total Drafts',
+        //   value: '3'
+        // },
+        // {
+        //   icon: 'mdi-seal',
+        //   name: 'Total assets',
+        //   value: '394'
+        // }
 
       ],
       headers: [
@@ -178,8 +173,48 @@ export default {
       desserts: []
     }
   },
+  methods: {
+    pw (item) {
+      item.status = !item.status
+    },
+    deletePost (id) {
+      this.deleteSinglePost = {
+        flag: true,
+        data: id
+      }
+    },
+    getStats () {
+      Stats.getAll().then(res => {
+        console.log(res)
+        this.analysis[0].name = res[0].status
+        this.analysis[0].value = res[0].count
+        this.analysis[1].name = res[1].status
+        this.analysis[1].value = res[1].count
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    getAll (val) {
+      Blogs.getAllPosts(val).then(res => {
+        console.log(res)
+        this.desserts = res
+      }).catch(err => console.log(err))
+    }
+  },
+  watch: {
+    chosenType: {
+      handler (val) {
+        this.getAll(val.path)
+      },
+      deep: true
+    }
+  },
+  components: {
+    DeleteBlogDialog
+  },
   created () {
-    this.getAll()
+    this.getStats()
+    this.getAll('')
   }
 }
 </script>

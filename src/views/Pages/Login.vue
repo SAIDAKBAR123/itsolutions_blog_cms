@@ -17,7 +17,7 @@
             <v-card class="abigel">
             <v-card class="elevation-12" color="transparent">
               <v-card-title class=" justify-center">
-                <v-avatar size="120"><v-img src="https://wallpaperaccess.com/full/103209.jpg"></v-img></v-avatar>
+                <v-avatar size="120"><v-icon size="120" color="white">mdi-account-circle</v-icon></v-avatar>
               </v-card-title>
               <v-card-subtitle class="text-center my-2 white--text display-2">Hi!</v-card-subtitle>
               <v-card-text>
@@ -32,6 +32,7 @@
                   />
 
                   <v-text-field
+                   v-on:keyup.enter="login"
                     id="password"
                     outlined
                     dark
@@ -44,7 +45,7 @@
               </v-card-text>
               <v-card-actions>
                 <v-spacer />
-                <v-btn color="blue darken-4" tile elevation="0" dark class="py-2 px-5" @click="login" x-large>Login</v-btn>
+                <v-btn color="blue-grey darken-4" tile elevation="0" dark class="py-2 px-5" @click="login" x-large>Login</v-btn>
                  <v-spacer />
               </v-card-actions>
             </v-card>
@@ -78,6 +79,9 @@ export default {
         localStorage.setItem('cmsAdmin', res.token)
         this.$store.commit('setToken', res.token)
         this.$router.push('/')
+      }).catch(err => {
+        console.log(err)
+        if (err.status === 401) { alert('Error in password or username') }
       })
     }
   }
@@ -108,7 +112,8 @@ export default {
     margin: -20px;
 }
 .bck_img {
-  background: url('https://www.pngkey.com/png/full/336-3369684_home-web-design-education-website-background.png');
+background: rgb(42,42,42);
+background: radial-gradient(circle, rgba(42,42,42,1) 0%, rgba(0,109,133,1) 0%, rgba(8,31,46,1) 43%);
   background-repeat: no-repeat;
   background-size: cover;
 }

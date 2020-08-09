@@ -42,6 +42,7 @@ export default {
   },
   methods: {
     deletePost () {
+      console.log(this.post)
       Blogs.deleteSinglePost(this.post.data).then(res => {
         console.log(res)
         this.updateTable()
