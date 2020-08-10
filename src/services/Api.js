@@ -16,7 +16,7 @@ export function execute (promise) {
             }
             reject((err.response))
           }
-          reject(new Error(err))
+          reject(err)
         }
         reject(new Error('Check your request, and server'))
       })

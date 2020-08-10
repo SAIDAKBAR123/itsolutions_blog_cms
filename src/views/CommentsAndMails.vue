@@ -1,21 +1,15 @@
 <template>
   <div>
     <v-container fluid class="fill-height">
-      <v-row no-gutters>
+      <v-row no-gutters class="px-0">
         <v-col class="px-0" cols="3">
-          <v-navigation-drawer width="400" v-model="drawer" absolute>
-            <v-row justify="space-between">
+          <v-navigation-drawer :height="height.y/1.13" width="380" v-model="drawer" permanent>
+            <v-row justify="start">
                 <v-col cols="auto">
                   <v-btn active-class="primary" :ripple="false" text>All</v-btn>
                 </v-col>
                 <v-col cols="auto" class="px-0">
-                  <v-btn @click="getUnread" text :ripple="false">Unread</v-btn>
-                </v-col>
-                   <v-col cols="auto" class="px-0">
-                  <v-btn text :ripple="false">Mails</v-btn>
-                </v-col>
-                 <v-col cols="auto" >
-                  <v-btn text :ripple="false">Comments</v-btn>
+                  <v-btn  text :ripple="false">Unread</v-btn>
                 </v-col>
             </v-row>
             <v-list two-line>
@@ -27,31 +21,30 @@
                     type="list-item-three-line"
                     class="mx-auto"
                   ></v-skeleton-loader>
-                <v-card tile v-for="(item, index) in items" :key="index">
+                <v-card  @click="getMessage(item)" tile v-for="(item, index) in items" :key="index">
                   <v-list-item :key="item.title">
-                    <template v-slot:default="{ active }">
+                    <template v-slot:default="{ }">
                       <v-list-item-content>
                         <v-list-item-title
-                          v-text="item.title"
+                        :class="`text-uppercase ${item.seen ? '' : 'blue--text'}`"
+                          v-text="item.name"
                         ></v-list-item-title>
                         <v-list-item-subtitle
                           class="text--primary"
-                          v-text="item.headline"
+                          v-text="item.email"
                         ></v-list-item-subtitle>
                         <v-list-item-subtitle
-                          v-text="item.subtitle"
+                          v-text="item.text"
                         ></v-list-item-subtitle>
                       </v-list-item-content>
 
                       <v-list-item-action>
                         <v-list-item-action-text
-                          v-text="item.action"
-                        ></v-list-item-action-text>
-                        <v-icon small v-if="!active" color="blue lighten-1">
-                           mdi-record
-                        </v-icon>
-
-                        <v-icon v-else color="blue">
+                        >
+                        {{item.createdAt | moment("calendar")}}
+                        </v-list-item-action-text>
+                         <v-icon  color="blue"></v-icon>
+                        <v-icon v-if="!item.seen" color="blue">
                           mdi-email
                         </v-icon>
                       </v-list-item-action>
@@ -68,16 +61,16 @@
           </v-navigation-drawer>
         </v-col>
         <v-col cols="9">
-          <v-card outlined>
+           <transition name="slide-fade">
+          <v-card tile flat v-if="mail.createdAt">
               <!-- <v-img aspect-ratio="2.0" max-width="70%" src="https://reconcept.ru/uploads/images/Portfolio/190311084515/1552293915_F7.jpg"></v-img> -->
             <v-card-title class="nunito">
               <v-row>
-              <v-col cols="auto">
-                  <v-icon>mdi-clock-outline</v-icon><span class="nunito align-center pt-2"> <small> 22 Jan, 2020 14:00</small></span><br>
-                  <span class=""><strong>To</strong>: me</span><br>
-                  <span class=" pb-0"><strong>From</strong>: aligor@gmail.com</span><br>
-                  <span class="pb-0"><strong>Name</strong>: Ali Connors</span><br>
-                  <h1 class="nunito"><strong>Title:</strong> asdasdas sdasdas asd asda asfddbfdgnbfgefvsdfvsd  afvsdsg  sdfgv sd</h1>
+              <v-col cols="auto" align-self="center">
+                  <v-icon>mdi-clock-outline</v-icon><span class="nunito align-center pt-2 px-1"><small>{{mail.createdAt | moment('calendar')}}</small></span><br>
+                  <span class=""><strong>To</strong>: Itsolutions</span><br>
+                  <span class=" pb-0"><strong>From</strong>: {{mail.email}}</span><br>
+                  <span class="pb-0"><strong>Name</strong>: {{mail.name + ' ' + mail.surname}}</span><br>
               </v-col>
             </v-row>
             </v-card-title>
@@ -88,13 +81,24 @@
                   colored-border
                   color="blue lighten-3"
                 >
-                  Aliquam eu nunc. Fusce commodo aliquam arcu. In consectetuer turpis ut velit. Nulla facilisi..
-
-                  Morbi mollis tellus ac sapien. Fusce vel dui. Praesent ut ligula non mi varius sagittis. Vivamus consectetuer hendrerit lacus. Suspendisse enim turpis, dictum sed, iaculis a, condimentum nec, nisi.
+                {{mail.text}}
                 </v-alert>
               </span>
             </v-card-text>
           </v-card>
+          <v-card v-else elevation="0" tile flat>
+            <v-card-text>
+                <v-row justify="center" class="fill-height">
+                  <v-col cols="auto">
+                    <v-img height="170" width="170" :src="require('../assets/images/mailbox.png')"></v-img>
+                  </v-col>
+                  <v-col cols="12">
+                      <p class="text-center nunito">Please select mail to continue reading</p>
+                  </v-col>
+                </v-row>
+            </v-card-text>
+          </v-card>
+          </transition>
         </v-col>
       </v-row>
     </v-container>
@@ -102,77 +106,73 @@
 </template>
 
 <script>
+import Mails from '../services/Mails'
 export default {
   data () {
     return {
+      height: {
+        x: window.innerWidth,
+        y: window.innerHeight
+      },
+      selected: '',
       drawer: true,
-      items: [
-        {
-          action: '15 min',
-          headline: 'Brunch this weekend?',
-          title: 'Ali Connors',
-          subtitle:
-            "I'll be in your neighborhood doing errands this weekend. Do you want to hang out?"
-        },
-        {
-          action: '2 hr',
-          headline: 'Summer BBQ',
-          title: 'me, Scrott, Jennifer',
-          subtitle: "Wish I could come, but I'm out of town this weekend."
-        },
-        {
-          action: '4 hr',
-          headline: 'Summer BBQ',
-          title: 'me, Scrott, Jennifer',
-          subtitle: "Wish I could come, but I'm out of town this weekend."
-        },
-        {
-          action: '4 hr',
-          headline: 'Summer BBQ',
-          title: 'me, Scrott, Jennifer',
-          subtitle: "Wish I could come, but I'm out of town this weekend."
-        },
-        {
-          action: '4 hr',
-          headline: 'Summer BBQ',
-          title: 'me, Scrott, Jennifer',
-          subtitle: "Wish I could come, but I'm out of town this weekend."
-        },
-        {
-          action: '4 hr',
-          headline: 'Summer BBQ',
-          title: 'me, Scrott, Jennifer',
-          subtitle: "Wish I could come, but I'm out of town this weekend."
-        },
-        {
-          action: '4 hr',
-          headline: 'Summer BBQ',
-          title: 'me, Scrott, Jennifer',
-          subtitle: "Wish I could come, but I'm out of town this weekend."
-        }
-      ],
-      unread: [
-        {
-          action: '2 hr',
-          headline: 'Summer BBQ',
-          title: 'me, Scrott, Jennifer',
-          subtitle: "Wish I could come, but I'm out of town this weekend."
-        },
-        {
-          action: '4 hr',
-          headline: 'Summer BBQ',
-          title: 'me, Scrott, Jennifer',
-          subtitle: "Wish I could come, but I'm out of town this weekend."
-        }
-      ]
+      items: [],
+      mail: {
+        text: '',
+        createdAt: '',
+        name: '',
+        surname: '',
+        email: ''
+      }
+    }
+  },
+  watch: {
+    selected (val) {
+      console.log(val)
     }
   },
   methods: {
-    getUnread () {
-      this.items = this.unread
+    getMessage (msg) {
+      if (msg.seen) {
+        this.mail = msg
+      } else {
+        Mails.doSeen(msg.id).then(res => {
+          this.items.find(el => el.id === msg.id).seen = true
+          this.mail = msg
+        }).catch(err => {
+          console.log(err)
+          alert(err)
+        })
+      }
+    },
+    getMail () {
+      Mails.getAll().then(res => {
+        this.items = res.reverse()
+      }).catch(err => {
+        console.log(err)
+        alert(err)
+      })
+    },
+    cleanMail () {
+      alert('sdasd')
     }
+  },
+  created () {
+    this.getMail()
   }
 }
 </script>
 
-<style></style>
+<style scoped>
+.slide-fade-enter-active {
+  transition: all .3s ease;
+}
+.slide-fade-leave-active {
+  transition: all .8s cubic-bezier(1.0, 0.5, 0.8, 1.0);
+}
+.slide-fade-enter, .slide-fade-leave-to
+/* .slide-fade-leave-active below version 2.1.8 */ {
+  transform: translateX(10px);
+  opacity: 0;
+}
+</style>
